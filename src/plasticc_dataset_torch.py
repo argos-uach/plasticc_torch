@@ -11,8 +11,7 @@ class PLAsTiCC_Torch_Dataset_Lazy(torch.utils.data.Dataset):
     Individual light curves pt files (torch) should reside in path_to_light_curves (see __init__)
     """
     
-    def __init__(self, path_to_light_curves, plasticc_ids, lc_labels, is_test=False):
-        
+    def __init__(self, path_to_light_curves, plasticc_ids, lc_labels, is_test=False):        
     
         self.path = path_to_light_curves
         self.plasticc_ids = plasticc_ids
@@ -28,7 +27,7 @@ class PLAsTiCC_Torch_Dataset_Lazy(torch.utils.data.Dataset):
         with open(self.path / f'{self.plasticc_ids[idx]}.pt', 'rb') as f:
             lc_torch = torch.load(f)
         
-        return lc_torch, self.lc_labels[idx]
+        return lc_torch, self.lc_labels[idx], self.plasticc_ids[idx]
 
 
 class PLAsTiCC_Torch_Dataset_Eager(torch.utils.data.Dataset):
@@ -54,7 +53,7 @@ class PLAsTiCC_Torch_Dataset_Eager(torch.utils.data.Dataset):
     
     def __getitem__(self, idx):
         
-        return self.lc_torch[idx], self.lc_labels[idx]
+        return self.lc_torch[idx], self.lc_labels[idx], self.plasticc_ids[idx]
     
 def get_plasticc_datasets(path_to_plasticc, lazy_loading=True):
     
