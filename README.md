@@ -4,12 +4,14 @@ Tools to create torch datasets for the PLAsTiCC classification challenge
 ## Get the data
 
 1. Create a folder
-1. Run `./scripts/download\_plasticc\_from\_zenodo.sh myfolder`
+1. Run `./scripts/download_plasticc_from_zenodo.sh myfolder`
 1. Decompress the csv's you plan to use with `gunzip`
  
 ## (Optional) Prepare the data
 
-If you plan to use the lazy (explanation below) generate light curve torch tensors with `python src/plasticc_create_lightcurves.py myfolder`
+If you plan to use the lazy (explanation below) generate light curve torch tensors with 
+
+`python src/plasticc_create_lightcurves.py myfolder`
 
 ## Data Sets
 
