@@ -18,6 +18,7 @@ class PLAsTiCC_Torch_Dataset_Lazy(torch.utils.data.Dataset):
         self.lc_labels = lc_labels        
         self.is_test = is_test
         self.data_size = len(plasticc_ids)
+            
         
     def __len__(self):
         return self.data_size
@@ -55,7 +56,7 @@ class PLAsTiCC_Torch_Dataset_Eager(torch.utils.data.Dataset):
         
         return self.lc_torch[idx], self.lc_labels[idx], self.plasticc_ids[idx]
     
-def get_plasticc_datasets(path_to_plasticc, lazy_loading=True):
+def get_plasticc_datasets(path_to_plasticc, only_these_labels=None, lazy_loading=True):
     
     if lazy_loading:
         print("You have selected lazy loading. Light curves will be loaded ondemand from the harddrive")
@@ -68,12 +69,17 @@ def get_plasticc_datasets(path_to_plasticc, lazy_loading=True):
     df_meta = {}
     df_meta[False] = pd.read_csv(p / f'plasticc_train_metadata.csv').set_index("object_id")
     df_meta[True] = pd.read_csv(p / f'plasticc_test_metadata.csv').set_index("object_id")
+    # If given keep only specified classes
+    if only_these_labels is not None:
+        for mode in [False, True]:
+            mask = df_meta[mode]["true_target"].isin(only_these_labels)
+            df_meta[mode] = df_meta[mode].loc[mask]
     data_paths = sorted(p.glob('plasticc_*_lightcurves*.csv'))
     print(f"Found {len(data_paths)} csv files at given path")
     for data_path in data_paths:
-        mode = 'test' in str(data_path)
+        mode = 'test' in str(data_path) # Boolean mask
         df_data = pd.read_csv(data_path).set_index("object_id")
-        lc_ids = df_data.index.unique()            
+        lc_ids = df_data.index.unique().intersection(df_meta[mode].index)           
         if lazy_loading:
             torch_datasets.append(PLAsTiCC_Torch_Dataset_Lazy(p / 'light_curves',
                                                               list(lc_ids), 
@@ -81,7 +87,7 @@ def get_plasticc_datasets(path_to_plasticc, lazy_loading=True):
                                                               is_test=mode))
         else:
             print(f'Loading {data_path}')
-            torch_datasets.append(PLAsTiCC_Torch_Dataset_Eager(df_data, 
+            torch_datasets.append(PLAsTiCC_Torch_Dataset_Eager(df_data.loc[lc_ids], 
                                                                list(lc_ids),
                                                                list(df_meta[mode]['true_target'].loc[lc_ids]),
                                                                is_test=mode))
