@@ -6,8 +6,8 @@ def plot_light_curve(torch_dataset, index_in_dataset, figsize=(6, 3)):
     
     fig, ax = plt.subplots(figsize=figsize, tight_layout=True)
     for band, band_name in enumerate('ugrizY'):
-        mask = lc_data[:, 3, band] == 1
-        mjd, flux, flux_err = lc_data[mask, :3, band].T
+        mask = lc_data[band, 3, :] == 1
+        mjd, flux, flux_err = lc_data[band, :3, mask]
         ax.errorbar(mjd, flux, flux_err, fmt='.', label=band_name)
     ax.legend()
     ax.set_ylabel('Flux')

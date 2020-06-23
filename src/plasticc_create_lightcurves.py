@@ -6,13 +6,13 @@ import torch
 import sys
 
 def make_lc_tensor(df_np, max_lc_length):
-    lc_numpy = np.zeros(shape=(max_lc_length, 4, 6))
+    lc_numpy = np.zeros(shape=(6, 4, max_lc_length))
     for band in range(6):
         #lc_data = df_lc[["mjd", "flux", "flux_err"]][df_lc.passband==band].values.astype('float32')
         mask = df_np[:, 1] == band
         lc_data = df_np[mask, :][:, [0, 2, 3]]
-        lc_numpy[:lc_data.shape[0], :3, band] = lc_data
-        lc_numpy[:lc_data.shape[0], 3, band] = 1
+        lc_numpy[band, :3, :lc_data.shape[0]] = lc_data.T
+        lc_numpy[band, 3, :lc_data.shape[0]] = 1
     return torch.from_numpy(lc_numpy.astype('float32'))
 
 
