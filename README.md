@@ -4,8 +4,8 @@ Tools to create torch datasets for the PLAsTiCC classification challenge
 ## Get the data
 
 1. Create a folder
-1. Run `./scripts/download_plasticc_from_zenodo.sh myfolder`
-1. Decompress the csv's you plan to use with `gunzip`
+1. Run `./scripts/download_plasticc_from_zenodo.sh myfolder` TODO: Check md5sums!
+1. Decompress the csv's, e.g. `7z x plasticc_train_metadta.csv.gz`
  
 ## (Optional) Prepare the data
 
