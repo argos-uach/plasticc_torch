@@ -98,7 +98,7 @@ def get_plasticc_datasets(path_to_plasticc, only_these_labels=None, lazy_loading
         #df_data = pd.read_csv(data_path).set_index("object_id") # This still requires a lot of memory!!
         #lc_ids = df_data.index.unique().intersection(df_meta[mode].index)
         lc_ids = get_unique_indexes(data_path).intersection(df_meta[mode].index)
-        if len(lc_ids) < 0:
+        if len(lc_ids) == 0:
             print("Empty intersection, skipping file")
             continue
         current_labels = list(df_meta[mode]['true_target'].loc[lc_ids])
